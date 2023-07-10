@@ -9,9 +9,10 @@ export class Vec2 {
     return new Vec2(this.x - other.x, this.y - other.y)
   }
 
-  addSelf (other: Vec2): void {
+  addSelf (other: Vec2): this {
     this.x += other.x
     this.y += other.y
+    return this
   }
 
   subSelf (other: Vec2): void {
@@ -23,9 +24,10 @@ export class Vec2 {
     return new Vec2(this.x * scalar, this.y * scalar)
   }
 
-  scaleSelf (scalar: number): void {
+  scaleSelf (scalar: number): this {
     this.x *= scalar
     this.y *= scalar
+    return this
   }
 
   dot (other: Vec2): number {
@@ -49,12 +51,13 @@ export class Vec2 {
     }
   }
 
-  normalizeSelf (): void {
+  normalizeSelf (): this {
     const magnitude = this.magnitude()
     if (magnitude !== 0) {
       this.x /= magnitude
       this.y /= magnitude
     }
+    return this
   }
 
   copy (): Vec2 {

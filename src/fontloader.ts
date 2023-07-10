@@ -9,7 +9,7 @@ export function setFontUrl (url: string): void {
   downloadTag.href = url
   styleTag.innerText = `
 body {
-    color: #0000ff;
+  color: #0000ff;
 }
 @font-face {
     font-family: urlFont;
