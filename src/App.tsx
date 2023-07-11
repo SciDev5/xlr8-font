@@ -3,7 +3,7 @@ import { setFontBlob } from './fontloader'
 import { type FontGen } from './font/FontGen'
 import { GlyphEditor } from './font/GlyphEditor'
 import { Font } from 'fonteditor-core'
-import { generateFont } from './font/myfont'
+import { generateFontXLR8 } from './font/xlr8-font'
 
 function r (): void {
   (async () => {
@@ -26,7 +26,9 @@ function recalculate (fontGen: FontGen): void {
   setFontBlob(new Blob([buf], { type: 'font/ttf' }))
 }
 
-const fontToEdit = generateFont(150)
+const fontToEdit = generateFontXLR8(128)
+// const fontToEdit = generateFont(50)
+// const fontToEdit = generateFont(200)
 function App (): JSX.Element {
   recalculate(fontToEdit)
   r()
@@ -39,12 +41,34 @@ function App (): JSX.Element {
       {/* <button onClick={() => {
         recalculate(fontToEdit)
       }}>recalculate</button> */}
-      <p style={{ whiteSpace: 'pre', fontFamily: 'urlFont', fontSize: 40, padding: '1em', textDecoration: underlined ? 'underline' : 'unset' }}>
+      <p
+        style={{ whiteSpace: 'pre', fontFamily: 'urlFont', fontSize: 40, padding: '1em', textDecoration: underlined ? 'underline' : 'unset' }}
+        contentEditable
+        spellCheck={false}
+      >
         {`
-abcdefghijklmnopqrstuvwxyz
+> IGNITION IN 3...
+2...
+1...
+!! LAUNCH !!
+-------------------
+  hello world
+-------------------
 ABCDEFGHIJKLMNOPQRSTUVWXYZ
-0123456789
-!@#$%^&*(){}[]\`\\/|~?.,<>=+-_ñÑçÇ :;'"
+abcdefghijklmnopqrstuvwxyz
+\`'"~!?@#$%^&*()[]{}-+=_|\\/<>.,;:
+ÑÇÁÄÉËÍÏÓÖÚÜ
+ñçáäéëíïóöúü
+Éí (combiners)
+___________________
+teleportation
+Object@3FD03E7A
+for (let i = 0; i < 10; i++) {
+  console.log(":3c")
+}
+::::::::::::
+@SciDev ~/usr/desktop>
+  cat ./XLR8-mono.ttf
         `.trim()}
       </p>
       <label htmlFor={id}>underline: <input type='checkbox' id={id} checked={underlined} onChange={e => {
