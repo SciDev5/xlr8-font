@@ -103,7 +103,7 @@ export class FontGen {
 
         postoints: NaN, // what the hell
       },
-      'OS/2': {
+      'OS/2': { // FIXME This is probably why it doesn't work
         achVendID: 'LMAO',
         ulCodePageRange1: 536871327,
         ulCodePageRange2: 0,
