@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { type GlyphGen, type FontGen, EM_SIZE } from './FontGen'
+import { type FontGen, EM_SIZE } from '../font/FontGen'
+import { type GlyphGen } from '../font/GlyphGen'
 import { Vec2 } from '../util/Vec2'
 
 export function GlyphEditor ({ font, onChange, editingGlyph }: { font: FontGen, onChange: () => void, editingGlyph: string }): JSX.Element {

@@ -1,80 +1,44 @@
-import React, { useId, useState } from 'react'
-import { setFontBlob } from './fontloader'
+import React, { useEffect, useState } from 'react'
 import { type FontGen } from './font/FontGen'
-import { GlyphEditor } from './font/GlyphEditor'
-import { Font } from 'fonteditor-core'
+import { GlyphEditor } from './react/GlyphEditor'
 import { generateFontXLR8 } from './font/xlr8-font'
-
-function r (): void {
-  (async () => {
-    const buf = await fetch('http://localhost:3000/roboto.ttf').then(async v => await v.arrayBuffer())
-
-    const r = Font.create(buf, { type: 'ttf' }).get()
-    console.log('OS/2 - Roboto', r['OS/2'])
-  })().catch(e => { throw e })
-}
+import { FontPreview } from './react/FontPreview'
 
 function recalculate (fontGen: FontGen): void {
-  const font = Font.create(fontGen.compile().write({ type: 'ttf', toBuffer: true }) as ArrayBuffer, { type: 'ttf' })
-
-  console.log(font.get())
-
-  const buf = font.write({ type: 'ttf', toBuffer: true }) as ArrayBuffer
-
-  // new Uint8Array(buf)[12] = 0 // invalidate the OS/2 table
-
-  setFontBlob(new Blob([buf], { type: 'font/ttf' }))
+  fontGen.compile()
+  fontGen.updateFontFace()
 }
 
-const fontToEdit = generateFontXLR8(128)
-// const fontToEdit = generateFont(50)
-// const fontToEdit = generateFont(200)
-function App (): JSX.Element {
-  recalculate(fontToEdit)
-  r()
+const fontToEdit = generateFontXLR8(125, 400)
+// const fontToEdit = generateFontXLR8(50, 100)
+// const fontToEdit = generateFontXLR8(75, 200)
+// const fontToEdit = generateFontXLR8(175, 700)
+// const fontToEdit = generateFontXLR8(200, 900)
 
-  const id = useId()
-  const [underlined, setUnderlined] = useState(false)
+function App (): JSX.Element {
+  useEffect(() => {
+    recalculate(fontToEdit)
+  }, [])
+
+  const [editingGlyph, setEditingGlyph] = useState('a')
+  const [editingGlyphValid, setEditingGlyphValid] = useState(editingGlyph)
 
   return (
-    <div className="App" style={{ fontFamily: 'monospace' }}>
-      {/* <button onClick={() => {
-        recalculate(fontToEdit)
-      }}>recalculate</button> */}
-      <p
-        style={{ whiteSpace: 'pre', fontFamily: 'urlFont', fontSize: 40, padding: '1em', textDecoration: underlined ? 'underline' : 'unset' }}
-        contentEditable
-        spellCheck={false}
-      >
-        {`
-> IGNITION IN 3...
-2...
-1...
-!! LAUNCH !!
--------------------
-  hello world
--------------------
-ABCDEFGHIJKLMNOPQRSTUVWXYZ
-abcdefghijklmnopqrstuvwxyz
-\`'"~!?@#$%^&*()[]{}-+=_|\\/<>.,;:
-ÑÇÁÄÉËÍÏÓÖÚÜ
-ñçáäéëíïóöúü
-Éí (combiners)
-___________________
-teleportation
-Object@3FD03E7A
-for (let i = 0; i < 10; i++) {
-  console.log(":3c")
-}
-::::::::::::
-@SciDev ~/usr/desktop>
-  cat ./XLR8-mono.ttf
-        `.trim()}
-      </p>
-      <label htmlFor={id}>underline: <input type='checkbox' id={id} checked={underlined} onChange={e => {
-        setUnderlined(e.currentTarget.checked)
-      }}/></label>
-      <GlyphEditor font={fontToEdit} editingGlyph='K' onChange={() => { recalculate(fontToEdit) }}/>
+    <div className="App" style={{ fontFamily: 'monospace', display: 'flex', flexDirection: 'row' }}>
+      <FontPreview font={fontToEdit} />
+      <div style={{ flex: '0.5 1' }}>
+        <button onClick={() => {
+          const filename = prompt('file name?')
+          if (filename != null) {
+            fontToEdit.download(filename)
+          }
+        }}>download font</button>
+        <input value={editingGlyph} onChange={e => {
+          if (e.currentTarget.value.length <= 1) setEditingGlyph(e.currentTarget.value)
+          if (e.currentTarget.value.length === 1) setEditingGlyphValid(e.currentTarget.value)
+        }} />
+        <GlyphEditor font={fontToEdit} editingGlyph={editingGlyphValid} onChange={() => { recalculate(fontToEdit) }} />
+      </div>
     </div>
   )
 }

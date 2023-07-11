@@ -1,5 +1,6 @@
 import { Vec2 } from '../util/Vec2'
-import { FontGen, GlyphGen } from './FontGen'
+import { FontGen } from './FontGen'
+import { GlyphGen } from './GlyphGen'
 
 /** Shorthand for `Vec2` */
 function v (x: number, y: number): Vec2 {
@@ -11,9 +12,9 @@ const Y = { L: 0, H: 2048 - 512, C: 1024 - 256, CL: 256 + 128, CH: 1024 + 128, S
 const Indent = 256
 const Q = (X.C - X.L) / 2
 /** The generate the glyphs for the font I am now calling XLR8. */
-export function generateFontXLR8 (weight: number): FontGen {
-  const R = weight / 2
-  const f = new FontGen()
+export function generateFontXLR8 (stroke: number, weight: number): FontGen {
+  const R = stroke / 2
+  const f = new FontGen('XLR8', 'xlr8', 'Regular', '0.0', weight)
   function add (glyph: GlyphGen): void {
     f.glyphs.set(glyph.char, glyph)
   }
@@ -45,13 +46,13 @@ export function generateFontXLR8 (weight: number): FontGen {
   //   v(X.C + R, Y.C),
   // ]], weight))
 
-  add(new GlyphGen(' ', [], weight))
+  add(new GlyphGen(' ', [], stroke))
 
   add(new GlyphGen('A', [[
     v(X.L, Y.L),
     v(X.L, Y.H),
     v(X.R, Y.L),
-  ]], weight))
+  ]], stroke))
 
   add(new GlyphGen('B', [[
     v(X.L, Y.L),
@@ -62,7 +63,7 @@ export function generateFontXLR8 (weight: number): FontGen {
     v(X.R, Y.C - Indent),
     v(X.R, Y.L + R),
     v(X.L, Y.L + R),
-  ]], weight))
+  ]], stroke))
 
   add(new GlyphGen('C', [[
     v(X.R, Y.L + R),
@@ -70,7 +71,7 @@ export function generateFontXLR8 (weight: number): FontGen {
     v(X.L, Y.H - R - Indent),
     v(X.L + Indent, Y.H - R),
     v(X.R, Y.H - R),
-  ]], weight))
+  ]], stroke))
 
   add(new GlyphGen('D', [[
     v(X.L, Y.L),
@@ -79,7 +80,7 @@ export function generateFontXLR8 (weight: number): FontGen {
     v(X.R, Y.C),
     v(X.R, Y.L + R),
     v(X.L, Y.L + R),
-  ]], weight))
+  ]], stroke))
 
   // add(new GlyphGen('E', [ // Split E (3 lines)
   //   [
@@ -104,7 +105,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L + R * 3, Y.C),
       v(X.R, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('F', [
     [
@@ -115,7 +116,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L + R * 3, Y.C),
       v(X.R, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('G', [
     [
@@ -130,7 +131,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       // v(X.R - Indent, Y.C),
       v(X.R, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('H', [
     [
@@ -147,7 +148,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.H),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('I', [
     [
@@ -160,7 +161,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('J', [
     [
@@ -170,7 +171,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.L + Indent),
       v(X.C - Indent, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('K', [
     [
@@ -184,7 +185,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.C),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('L', [
     [
@@ -192,7 +193,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('M', [
     [
@@ -205,7 +206,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.CH),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('N', [
     [
@@ -214,7 +215,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.L),
       v(X.R, Y.H),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('O', [
     [
@@ -224,7 +225,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.L + R),
       v(X.L, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('P', [
     [
@@ -234,7 +235,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.CH),
       v(X.C, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('Q', [
     [
@@ -249,7 +250,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.C),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('R', [
     [
@@ -260,7 +261,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R - Indent * 1.5, Y.C),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('S', [
     [
@@ -272,7 +273,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R - R - Indent * 1.5, Y.L + R),
       v(X.L, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('T', [
     [
@@ -281,7 +282,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.CH),
       v(X.C, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('U', [
     [
@@ -294,7 +295,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.H),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('V', [
     [
@@ -303,7 +304,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L + R + Indent, Y.L + R),
       v(X.R, Y.H),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('W', [
     [
@@ -316,7 +317,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.CL),
       v(X.R, Y.H),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('X', [
     [
@@ -331,7 +332,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.H),
       v(X.C - R * 2, Y.C + R * 2 * ((Y.H - Y.L) / (X.R - X.L))),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('Y', [
     [
@@ -342,7 +343,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.H),
       v(X.C - R * 2, Y.C + R * 2 * ((Y.H - Y.L) / (X.R - X.L))),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('Z', [
     [
@@ -351,7 +352,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('a', [
     [
@@ -359,7 +360,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.C + R),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('b', [
     [
@@ -369,7 +370,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.CL + R),
       v(X.C, Y.C + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('c', [
     [
@@ -378,7 +379,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('d', [
     [
@@ -388,7 +389,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.CL + R),
       v(X.C, Y.C + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('e', [
     [
@@ -403,7 +404,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.CL + R / 2),
       v(X.R, Y.CL + R / 2),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('f', [
     [
@@ -419,7 +420,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.C),
       v(X.C - Q + R, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('g', [
     [
@@ -429,7 +430,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R - R, Y.L),
       v(X.L, Y.S2),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('h', [
     [
@@ -442,7 +443,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.C - Indent),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('i', [
     [
@@ -455,7 +456,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('j', [
     [
@@ -465,7 +466,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.S1 + Indent),
       v(X.C - Indent, Y.S1),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('k', [
     [
@@ -480,7 +481,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.C - R * 2),
       v(X.R - R * 2, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   // add(new GlyphGen('l', [
   //   [
@@ -504,7 +505,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('m', [
     [
@@ -517,7 +518,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.CL + R),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('n', [
     [
@@ -530,7 +531,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.CL),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('o', [
     [
@@ -540,7 +541,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R - R / 2, Y.L + R),
       v(X.L + R / 2, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('p', [
     [
@@ -550,7 +551,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R - R, Y.CL),
       v(X.C, Y.L),
     ],
-  ], weight))
+  ], stroke))
   add(new GlyphGen('q', [
     [
       v(X.R - R + Indent, Y.S1),
@@ -560,7 +561,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L + R, Y.CL),
       v(X.C, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('r', [
     [
@@ -571,7 +572,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.C - Indent),
       v(X.R, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('s', [
     [
@@ -582,7 +583,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L + R, Y.C),
       v(X.R, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('t', [
     [
@@ -597,7 +598,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.C),
       v(X.R, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('u', [
     [
@@ -610,7 +611,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R - R, Y.C + R),
       v(X.R - R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('v', [
     [
@@ -619,7 +620,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L + R + Indent, Y.L + R),
       v(X.R, Y.C + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('w', [
     [
@@ -632,7 +633,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.CL),
       v(X.R, Y.C + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('x', [
     [
@@ -647,7 +648,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.C + R),
       v(X.C - R * 2, Y.CL + R / 2 + R * 2 * ((Y.C - Y.L + R) / (X.R - X.L + R))),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('y', [
     [
@@ -658,7 +659,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.C + R),
       v(X.C - R * 2, Y.CL + R / 2 + R * 2 * ((Y.C - Y.L + R) / (X.R - X.L + R))),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('z', [
     [
@@ -670,7 +671,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('0', [
     [
@@ -684,7 +685,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L + R * 3, Y.C - Indent / 2),
       v(X.R - R * 3, Y.C + Indent / 2),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('1', [
     [
@@ -693,7 +694,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(Q + X.C, Y.L + R),
       v(Q + X.L, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('2', [
     [
@@ -704,7 +705,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('3', [
     [
@@ -718,7 +719,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.L + R),
       v(X.L, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('4', [
     [
@@ -730,7 +731,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.C),
       v(X.C, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('5', [
     [
@@ -741,7 +742,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R - R, Y.C - R * 1),
       v(X.L, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('6', [
     [
@@ -752,7 +753,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.CL),
       v(X.L + R * 3, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('7', [
     [
@@ -764,7 +765,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.C),
       v(X.C, Y.C),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('8', [
     [
@@ -779,7 +780,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.CL),
       v(X.C + R * 2, Y.C - R * 2),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('9', [
     [
@@ -790,14 +791,14 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.H - R * 3),
       v(X.L + Q, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('`', [
     [
       v(X.C - Indent, Y.H),
       v(X.C, Y.CH),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('~', [
     [
@@ -806,7 +807,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C + Q * 3 / 4, (Y.C + Y.CL) / 2 - Q * 0.75),
       v(X.R, (Y.C + Y.CL) / 2 + Q * 0.75),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('!', [
     [
@@ -817,7 +818,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.L + R * 6),
       v(X.C, Y.H),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('?', [
     [
@@ -831,7 +832,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R - Q / 2, Y.H - R),
       v(X.L, Y.H - R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('@', [
     [
@@ -843,7 +844,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.CH),
       v(X.C, Y.L + Q),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('#', [
     [
@@ -862,7 +863,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C + Q + R, Y.H),
       v(X.C + Q - R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('$', [
     [
@@ -878,7 +879,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C + Q, Y.H + Q),
       v(X.C - Q, Y.L - Q),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('%', [
     [
@@ -901,7 +902,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, Y.L + R + Indent * 2),
       v(X.R, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('^', [
     [
@@ -909,7 +910,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.H),
       v(X.R, Y.CH - Q),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('&', [
     [
@@ -926,7 +927,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R - R, Y.CH),
       v(X.C + R, Y.C + R * (Y.H - Y.L) / (X.R - X.L)),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('*', [
     [
@@ -941,21 +942,21 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.C),
       v(X.C, Y.H),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('-', [
     [
       v(X.L, (Y.C + Y.CL) / 2),
       v(X.R, (Y.C + Y.CL) / 2),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('_', [
     [
       v(0, Y.L + R),
       v(1024, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('=', [
     [
@@ -966,7 +967,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.CL),
       v(X.R, Y.CL),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('+', [
     [
@@ -977,7 +978,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.L + Q / 2 + R),
       v(X.C, Y.CH - Q / 2 - R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('(', [
     [
@@ -986,7 +987,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C - Indent / 2, Y.S0 + Indent),
       v(X.C + Indent / 2, Y.S0),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen(')', [
     [
@@ -995,7 +996,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C + Indent / 2, Y.S0 + Indent),
       v(X.C - Indent / 2, Y.S0),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('[', [
     [
@@ -1004,7 +1005,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C - Indent / 2, Y.S0 + R),
       v(X.C + Indent / 2, Y.S0 + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen(']', [
     [
@@ -1013,7 +1014,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C + Indent / 2, Y.S0 + R),
       v(X.C - Indent / 2, Y.S0 + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('{', [
     [
@@ -1027,7 +1028,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.S0 + Indent),
       v(X.C + Indent, Y.S0),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('}', [
     [
@@ -1041,28 +1042,28 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.S0 + Indent),
       v(X.C - Indent, Y.S0),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('|', [
     [
       v(X.C, Y.H),
       v(X.C, Y.S0),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('/', [
     [
       v(X.R, Y.H),
       v(X.L, Y.S0),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('\\', [
     [
       v(X.L, Y.H),
       v(X.R, Y.S0),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen(',', [
     [
@@ -1070,14 +1071,14 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.L),
       v(X.C - R * 2, Y.L - R * 3),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('.', [
     [
       v(X.C, Y.L + R * 3),
       v(X.C, Y.L),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('<', [
     [
@@ -1085,7 +1086,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, (Y.L + Y.CH) / 2),
       v(X.R, Y.CH - Q / 2 - R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('>', [
     [
@@ -1093,7 +1094,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.R, (Y.L + Y.CH) / 2),
       v(X.L, Y.CH - Q / 2 - R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen(':', [
     [
@@ -1104,7 +1105,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.C + R),
       v(X.C, Y.C - R * 2),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen(';', [
     [
@@ -1116,7 +1117,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C, Y.C + R),
       v(X.C, Y.C - R * 2),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('"', [
     [
@@ -1127,21 +1128,21 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C + R * 2, Y.H),
       v(X.C + R * 2, Y.CH - R * 2),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen("'", [
     [
       v(X.C, Y.H),
       v(X.C, Y.CH - R * 2),
     ],
-  ], weight))
+  ], stroke))
 
   addDiacritic(new GlyphGen('\u0301', [
     [
       v(X.C - Q, Y.L),
       v(X.C + Q, Y.CL),
     ],
-  ], weight), [
+  ], stroke), [
     ['a', 'á'],
     ['e', 'é'],
     ['o', 'ó'],
@@ -1160,7 +1161,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C + R * 3, Y.L),
       v(X.C + R * 3, Y.L + R * 4),
     ],
-  ], weight), [
+  ], stroke), [
     ['a', 'ä'],
     ['e', 'ë'],
     ['i', 'ï'],
@@ -1187,7 +1188,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   add(new GlyphGen('Í', [
     [
@@ -1203,7 +1204,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.L, Y.L + R),
       v(X.R, Y.L + R),
     ],
-  ], weight))
+  ], stroke))
 
   addDiacritic(new GlyphGen('\u0303', [
     [
@@ -1212,7 +1213,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C + Q * 3 / 4, Y.L),
       v(X.R, Y.L + Q * 1.25),
     ],
-  ], weight), [
+  ], stroke), [
     ['n', 'ñ'],
     ['N', 'Ñ'],
   ])
@@ -1224,7 +1225,7 @@ export function generateFontXLR8 (weight: number): FontGen {
       v(X.C + Q, Y.S0),
       v(X.C - Q, Y.S1),
     ],
-  ], weight), [
+  ], stroke), [
     ['c', 'ç'],
     ['C', 'Ç'],
   ], DiactriticLocation.Below)

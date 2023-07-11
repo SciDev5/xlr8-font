@@ -1,11 +1,17 @@
-import { Font, type FontEditor, type TTF } from 'fonteditor-core'
-import { Vec2 } from '../util/Vec2'
-import { SVGPath as SVGPathString } from '../util/svg'
-import { outlinePolyline } from '../util/polyline'
+import { Font, type FontEditor } from 'fonteditor-core'
+import { type GlyphGen } from './GlyphGen'
 
 export const EM_SIZE = 2048
 
 export class FontGen {
+  constructor (
+    readonly displayName: string,
+    readonly fontFamily: string,
+    readonly fontVariant: string,
+    readonly version: string,
+    readonly fontWeight: number,
+  ) {}
+
   readonly glyphs = new Map<string, GlyphGen>()
 
   compile (): FontEditor.Font {
@@ -76,13 +82,13 @@ export class FontGen {
         numGlyphs: 0,
       },
       name: { // NOT AUTO
-        fontFamily: 'something',
-        fontSubFamily: 'regular',
-        uniqueSubFamily: 'something-regular',
-        version: '0.0.0',
-        copyright: 'me ig',
-        fullName: 'something but full name',
-        postScriptName: 'something-regular',
+        fontFamily: this.fontFamily,
+        fontSubFamily: this.fontVariant,
+        uniqueSubFamily: `${this.fontFamily}-${this.fontVariant}`,
+        version: this.version,
+        copyright: 'for copyright information, see <TODO>',
+        fullName: this.displayName,
+        postScriptName: `${this.fontFamily}-${this.fontVariant}`,
       },
       post: {
         format: 3,
@@ -147,75 +153,41 @@ export class FontGen {
       },
     })
 
+    if (this.ttfObjectURL != null) {
+      URL.revokeObjectURL(this.ttfObjectURL)
+    }
+    this.ttfObjectURL = URL.createObjectURL(new Blob([font.write({ type: 'ttf', toBuffer: true })], { type: 'font/ttf' }))
+
     return font
   }
+
+  private ttfObjectURL?: string
+  private readonly ownedStyleElement = (() => {
+    const elt = document.createElement('style')
+    document.head.appendChild(elt)
+    return elt
+  })()
+
+  updateFontFace (): void {
+    if (this.ttfObjectURL != null) {
+      this.ownedStyleElement.innerText = `
+@font-face {
+    font-family: ${this.fontFamily};
+    font-weight: ${this.fontWeight};
+    src: url('${this.ttfObjectURL}');
 }
-
-export class GlyphGen {
-  constructor (
-    readonly char: string,
-    public path: Vec2[][] = [],
-    readonly weight: number,
-  ) { }
-
-  get unicode (): number[] {
-    const unicode: number[] = []
-    let unicodeChar: number
-    let i = 0
-    while (!isNaN(unicodeChar = this.char.charCodeAt(i))) {
-      unicode.push(unicodeChar)
-      i++
+  `.trim()
     }
-    return unicode
   }
 
-  private get vecContours (): Vec2[][] {
-    console.log(this.path.map(path =>
-      outlinePolyline(path, this.weight),
-    ))
-
-    return this.path.map(path =>
-      outlinePolyline(path, this.weight),
-    )
-  }
-
-  readonly advanceWidth = 1024
-
-  private get contours (): TTF.Point[][] {
-    return this.vecContours
-      .filter(contour => contour.length > 0)
-      .map(v => v.map(({ x, y }) => ({ x, y, onCurve: true })))
-  }
-
-  getContourSVGPath (emBox: { pos: Vec2, height: number }): string {
-    const { vecContours } = this
-    return (
-      vecContours.map(contour =>
-        SVGPathString.polyLine(
-          contour.map(p => {
-            const { x, y } = p.scale(1 / EM_SIZE)
-            return (new Vec2(x, 1 - y)).scaleSelf(emBox.height).addSelf(emBox.pos)
-          }),
-        ),
-      ).join(' ')
-    )
-  }
-
-  toGlyph (): TTF.Glyph {
-    const { contours, unicode, advanceWidth } = this
-    const xs = contours.flat().map(v => v.x)
-    const ys = contours.flat().map(v => v.y)
-
-    return {
-      advanceWidth,
-      leftSideBearing: 0,
-      name: this.char,
-      unicode,
-      contours,
-      xMax: Math.max(0, ...xs),
-      xMin: Math.min(0, ...xs),
-      yMax: Math.max(0, ...ys),
-      yMin: Math.min(0, ...ys),
+  download (fileName: string): void {
+    if (this.ttfObjectURL != null) {
+      const downloadLink = document.createElement('a')
+      downloadLink.download = fileName.trim() + (fileName.trim().endsWith('.ttf') ? '' : '.ttf')
+      downloadLink.href = this.ttfObjectURL
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      downloadLink.remove()
     }
   }
 }
