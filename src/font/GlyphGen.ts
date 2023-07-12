@@ -4,12 +4,52 @@ import { SVGPath as SVGPathString } from '../util/svg'
 import { outlinePolyline } from '../util/polyline'
 import { EM_SIZE } from './FontGen'
 
+export enum DiactriticLocation {
+  Above,
+  AboveAttatch,
+  BelowAttatch,
+  Below,
+}
+
 export class GlyphGen {
+  readonly bounds: readonly [number, number]
   constructor (
     readonly char: string,
     public path: Vec2[][] = [],
     readonly weight: number,
-  ) { }
+    bounds: readonly [number, number] | null, // null is `auto`
+  ) {
+    this.bounds = bounds ?? (() => {
+      const c = this.vecContours.flat().map(v => v.y)
+      return [Math.min(...c), Math.max(...c)] as const
+    })()
+  }
+
+  withDiacritic ({ Q, stroke }: { Q: number, stroke: number }, toChar: string, diacritic: GlyphGen, loc: DiactriticLocation): GlyphGen {
+    const offY = ({
+      [DiactriticLocation.AboveAttatch]: () => this.bounds[1],
+      [DiactriticLocation.Above]: () => this.bounds[1] + Q,
+      [DiactriticLocation.BelowAttatch]: () => this.bounds[0],
+      [DiactriticLocation.Below]: () => this.bounds[0] - Q,
+    } satisfies { [k in DiactriticLocation]: () => number })[loc]()
+
+    const bounds = ({
+      [DiactriticLocation.AboveAttatch]: () => [this.bounds[0], this.bounds[1] + diacritic.bounds[1]],
+      [DiactriticLocation.Above]: () => [this.bounds[0], this.bounds[1] + diacritic.bounds[1]],
+      [DiactriticLocation.BelowAttatch]: () => [this.bounds[0] + diacritic.bounds[0], this.bounds[1]],
+      [DiactriticLocation.Below]: () => [this.bounds[0] + diacritic.bounds[0], this.bounds[1]],
+    } satisfies { [k in DiactriticLocation]: () => [number, number] })[loc]()
+
+    return new GlyphGen(
+      toChar,
+      [
+        ...this.path,
+        ...diacritic.path.map(c => c.map(v => v.add(new Vec2(0, offY)))),
+      ],
+      stroke,
+      bounds,
+    )
+  }
 
   get unicode (): number[] {
     const unicode: number[] = []
@@ -23,11 +63,8 @@ export class GlyphGen {
   }
 
   private get vecContours (): Vec2[][] {
-    console.log(this.path.map(path => outlinePolyline(path, this.weight),
-    ))
-
-    return this.path.map(path => outlinePolyline(path, this.weight),
-    )
+    // console.log(this.path.map(path => outlinePolyline(path, this.weight)))
+    return this.path.map(path => outlinePolyline(path, this.weight))
   }
 
   readonly advanceWidth = 1024
